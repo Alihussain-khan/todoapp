@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "@/store/auth";
 import HomeView from "../views/HomeView.vue";
 
 const router = createRouter({
@@ -33,37 +34,39 @@ const router = createRouter({
       path: "/todo",
       name: "todo",
       component: () => import("../views/TodoView.vue"),
+      meta: { needsauth: "true" },
     },
     {
       path: "/update",
       name: "update",
       component: () => import("../views/UpdateTodoView.vue"),
+      meta: { needsauth: "true" },
     },
     {
       path: "/update/:id",
       name: "update",
       component: () => import("../views/UpdateTodoView.vue"),
+      meta: { needsauth: "true" },
     },
     {
       path: "/create",
       name: "create",
       component: () => import("../views/CreateTodoView.vue"),
+      meta: { needsauth: "true" },
     },
   ],
 });
 
-// router.beforeEach((to, from, next) => {
-//   store.state.token = window.localStorage.getItem("token");
-//   if (store.state.token) {
-//     store.state.auth = "true";
-//   } else {
-//     store.state.auth = "false";
-//   }
-//   if (to.meta.needsauth && store.state.auth === "false") {
-//     next("/login");
-//   } else {
-//     next();
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  let token = window.localStorage.getItem("todotoken");
+  if (token) {
+    store.state.isloggedin = true;
+  }
+  if (!token && to.meta.needsauth) {
+    next("/login");
+  } else {
+    next();
+  }
+});
 
 export default router;

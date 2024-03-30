@@ -30,6 +30,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
+import router from "@/router";
 import { useRoute } from "vue-router";
 import axios from "axios";
 
@@ -57,9 +58,9 @@ function update() {
       .then((response) => {
         console.log(response);
         if (response.data.success) {
-          alert("successfull");
+          router.push("/");
         } else {
-          alert("registration failed");
+          alert("coultdnt update");
         }
       })
       .catch((err) => console.log(err));

@@ -1,8 +1,11 @@
 <template>
+  <!-- Main heading -->
   <h1 class="text-center font-blod text-2xl my-5">
     Your Current Tasks are listed below
   </h1>
+
   <div class="flex justify-between mt-5 w-4/5 mx-auto">
+    <!-- create toto items -->
     <div>
       <RouterLink to="/create">
         <button
@@ -12,6 +15,8 @@
         </button>
       </RouterLink>
     </div>
+
+    <!-- Search Bar -->
     <div class="relative">
       <input
         v-on:blur="changeVisibilty"
@@ -35,6 +40,7 @@
     </div>
   </div>
 
+  <!-- Table -->
   <div class="flex justify-center mx-auto mt-10" ref="scrollingdiv">
     <table class="w-4/5">
       <tr class="bg-green-500 text-white">
@@ -49,10 +55,17 @@
         <td class="text-center py-2 border-b-2">{{ item.title }}</td>
         <td class="text-center py-2 border-b-2">{{ item.description }}</td>
         <td class="text-center py-2 border-b-2">
-          <RouterLink :to="'/update/' + item.id">update</RouterLink>
+          <RouterLink
+            class="bg-orange-400 px-2 rounded-xl text-white"
+            :to="'/update/' + item.id"
+            >update</RouterLink
+          >
         </td>
         <td class="text-center py-2 border-b-2">
-          <button class="bg-red-600 px-1 rounded" @click="deleteItem(item.id)">
+          <button
+            class="bg-red-600 px-1 rounded text-white"
+            @click="deleteItem(item.id)"
+          >
             X
           </button>
         </td>
@@ -98,10 +111,12 @@ const deleteItem = (id) => {
 //onMount get api call
 onMounted(() => {
   apicall();
+  pagecount.value = pagecount.value + 1;
+  handleScroll();
   window.addEventListener("scroll", handleScroll);
 });
 
-//onUnMount get api call
+//onUnMount remove listener
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
 });
@@ -126,21 +141,24 @@ const apicall = () => {
       },
     })
     .then((response) => {
-      console.log("response lenth", response.data.items.data.length);
-      console.log("response", response.data.items.data);
       if (response.data.items.data.length > 1) {
         data.value.push(...response.data.items.data);
         pagecount.value = pagecount.value + 1;
         console.log("page count afte addition---", pagecount.value);
       }
-      // else {
-      //   data.value = response.data.items.data;
-      //   pagecount.value = pagecount.value + 1;
-      // }
-
-      console.log(data.value);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      if (err.response.statusText === "Unauthorized") {
+        axios
+          .post("http://3.232.244.22/api/refresh-token/" + token, {})
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
 };
 
 // search filter

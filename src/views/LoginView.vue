@@ -27,6 +27,7 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import router from "@/router";
 const email = ref(null);
 const password = ref(null);
 
@@ -39,15 +40,18 @@ function login() {
         password: password.value,
       })
       .then((response) => {
-        console.log(response.data.user);
         window.localStorage.setItem("todotoken", response.data.user.token);
         if (response.data.success) {
-          alert("successfull");
+          console.log("what");
+          router.push("/");
         } else {
           alert("registration failed");
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        alert("invalid credentials");
+      });
   } else {
     alert("cannot be empty");
   }

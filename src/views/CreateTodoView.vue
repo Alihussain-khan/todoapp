@@ -29,6 +29,7 @@
 
 <script setup>
 import { ref } from "vue";
+import router from "@/router";
 import axios from "axios";
 const title = ref(null);
 const description = ref(null);
@@ -52,9 +53,9 @@ function Add() {
       )
       .then((response) => {
         if (response.data.success) {
-          alert("successfull");
+          router.push("/");
         } else {
-          alert("registration failed");
+          alert("couldnt add");
         }
       })
       .catch((err) => console.log(err));

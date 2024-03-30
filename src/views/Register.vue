@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center mt-48">
     <div class="bg-gray-200 py-20 px-10 rounded">
-      <h1 class="text-2xl font-semibold text-center mb-5">login</h1>
+      <h1 class="text-2xl font-semibold text-center mb-5">Register</h1>
       <input
         class="mb-2 px-2 py-1 w-56 rounded"
         type="email"
@@ -33,6 +33,7 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import router from "@/router";
 const email = ref(null);
 const password = ref(null);
 const repassword = ref(null);
@@ -48,7 +49,7 @@ function register() {
       })
       .then((response) => {
         if (response.data.success) {
-          alert("successfull");
+          router.push("/login");
         } else {
           alert("registration failed");
         }
