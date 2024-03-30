@@ -1,5 +1,6 @@
 <template>
-  <div class="container mx-auto mt-10 ps-10">
+  <div v-if="isloading" class="loader animate-spin mx-auto mt-10"></div>
+  <div v-if="!isloading" class="container mx-auto mt-10 ps-10">
     <div class="flex justify-center">
       <h1 class="font-semibold text-xl me-5">Title:</h1>
       <input
@@ -34,13 +35,17 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import axios from "axios";
 
+//variabels
 const token = window.localStorage.getItem("todotoken");
 const data = ref(null);
 const route = useRoute();
 const title = ref(null);
 const description = ref(null);
+const isloading = ref(true);
 
+//update apicall
 function update() {
+  isloading.value = true;
   if (description.value) {
     axios
       .put(
@@ -58,6 +63,7 @@ function update() {
       .then((response) => {
         console.log(response);
         if (response.data.success) {
+          isloading.value = false;
           router.push("/");
         } else {
           alert("coultdnt update");
@@ -69,6 +75,7 @@ function update() {
   }
 }
 
+//get call
 onMounted(() => {
   axios
     .get("http://3.232.244.22/api/item/" + route.params.id, {
@@ -81,9 +88,21 @@ onMounted(() => {
       data.value = response.data.item;
       title.value = data.value.title;
       description.value = data.value.description;
+      isloading.value = false;
     })
     .catch((err) => console.log(err));
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.loader {
+  border: 3px solid #0f172a;
+  border-top: 3px solid #00c16a;
+  border-right: 3px solid #00c16a;
+  border-bottom: 3px solid #00c16a;
+  border-radius: 90%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+</style>

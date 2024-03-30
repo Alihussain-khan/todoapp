@@ -40,8 +40,13 @@
     </div>
   </div>
 
+  <div v-if="isloading" class="loader animate-spin mx-auto mt-10"></div>
   <!-- Table -->
-  <div class="flex justify-center mx-auto mt-10" ref="scrollingdiv">
+  <div
+    v-if="!isloading"
+    class="flex justify-center mx-auto mt-10"
+    ref="scrollingdiv"
+  >
     <table class="w-4/5">
       <tr class="bg-green-500 text-white">
         <th class="font-semibold text-xl py-1">number</th>
@@ -87,6 +92,7 @@ const searchlist = ref("");
 const isvisible = ref(false);
 const scrollingdiv = ref(null);
 const pagecount = ref(1);
+const isloading = ref(true);
 
 //delete api call
 const deleteItem = (id) => {
@@ -111,8 +117,6 @@ const deleteItem = (id) => {
 //onMount get api call
 onMounted(() => {
   apicall();
-  pagecount.value = pagecount.value + 1;
-  handleScroll();
   window.addEventListener("scroll", handleScroll);
 });
 
@@ -144,6 +148,7 @@ const apicall = () => {
       if (response.data.items.data.length > 1) {
         data.value.push(...response.data.items.data);
         pagecount.value = pagecount.value + 1;
+        isloading.value = false;
         console.log("page count afte addition---", pagecount.value);
       }
     })
@@ -176,11 +181,21 @@ watch(searchinput, () => {
 
 // changing search item visibility
 const changeVisibilty = () => {
-  console.log("it workds");
   setTimeout(() => {
     isvisible.value = false;
   }, 300);
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.loader {
+  border: 3px solid #0f172a;
+  border-top: 3px solid #00c16a;
+  border-right: 3px solid #00c16a;
+  border-bottom: 3px solid #00c16a;
+  border-radius: 90%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+</style>

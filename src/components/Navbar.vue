@@ -20,17 +20,15 @@
 
 <script setup>
 import router from "@/router";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import store from "@/store/auth";
+
+//variables
 const token = window.localStorage.getItem("todotoken");
 const auth = ref(false);
-onMounted(() => {
-  if (token) {
-    auth.value = true;
-  }
-});
 
+//logout
 const logout = () => {
   window.localStorage.removeItem("todotoken");
   store.state.isloggedin = false;

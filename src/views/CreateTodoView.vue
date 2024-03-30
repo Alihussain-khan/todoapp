@@ -1,5 +1,6 @@
 <template>
-  <div class="container mx-auto mt-10 ps-10">
+  <div v-if="isloading" class="loader animate-spin mx-auto mt-10"></div>
+  <div v-if="!isloading" class="container mx-auto mt-10 ps-10">
     <div class="flex justify-center">
       <h1 class="font-semibold text-xl me-5">Title:</h1>
       <input
@@ -31,11 +32,16 @@
 import { ref } from "vue";
 import router from "@/router";
 import axios from "axios";
+
+//variables
 const title = ref(null);
 const description = ref(null);
 const token = window.localStorage.getItem("todotoken");
+const isloading = ref(false);
+
+//apicall
 function Add() {
-  console.log(title.value + " " + description.value);
+  isloading.value = true;
   if (title.value && description.value) {
     axios
       .post(
@@ -53,16 +59,30 @@ function Add() {
       )
       .then((response) => {
         if (response.data.success) {
+          isloading.value = false;
           router.push("/");
         } else {
+          isloading.value = false;
           alert("couldnt add");
         }
       })
       .catch((err) => console.log(err));
   } else {
+    isloading.value = false;
     alert("cannot be empty");
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.loader {
+  border: 3px solid #0f172a;
+  border-top: 3px solid #00c16a;
+  border-right: 3px solid #00c16a;
+  border-bottom: 3px solid #00c16a;
+  border-radius: 90%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+</style>
